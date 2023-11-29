@@ -415,7 +415,7 @@ class convNet2(nn.Module):
 
         temp = torch.zeros(Scence_f.shape[0], 6, Scence_f.shape[1])
         for num in range(Scence_f.shape[0]):
-            temp[num : :] = torch.stack((Scence_f[num,:], Sharpness_f[num,:], Brightness_f[num,:], Colorfulness_f[num,:], Contrast_f[num,:], Noisiness_f[num,:]), 0)
+            temp[num::] = torch.stack((Brightness_f[num, :], Colorfulness_f[num, :], Contrast_f[num, :], Noisiness_f[num, :], Sharpness_f[num, :], Scence_f[num, :]), 0)
         edges_unordered = np.genfromtxt("cora.cites", dtype=np.int32)  # 读入边的信息
         adj = np.zeros((6, 6))
         for [q, p] in edges_unordered:
@@ -524,7 +524,7 @@ def main():
 ################### Fusion_convNet2
     model_all = convNet2(attr_net=Attrmodel, scene_net=modelSce, gcn_net=model_GCN)
     model_all = model_all.to(device)
-    pretrained_dict = torch.load("Mob_SPAQ_small.pt")
+    pretrained_dict = torch.load("MobV3s_SPAQ.pt")
     torch.cuda.empty_cache()
     model_all = model_all.to(device)
     model_dict = model_all.state_dict()  # 读出搭建的网络的参数，以便后边更新之后初始化
